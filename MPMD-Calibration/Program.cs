@@ -10,11 +10,16 @@ namespace MPMD_Calibration
     {
         static SerialPort _PrinterPort;
         static bool _continue;
+        static bool _waitforprinter;
+        static bool _responseReady;
+        static List<string> fullResponse = new List<string>();
 
         static void Main(string[] args)
         {
             Thread readThread = new Thread(Read);
-
+            _continue = true;
+            _waitforprinter = false;
+            _responseReady = false;
             _PrinterPort = new SerialPort();
 
             _PrinterPort.PortName = SetPortName(_PrinterPort.PortName);
@@ -24,11 +29,33 @@ namespace MPMD_Calibration
             _PrinterPort.ReadTimeout = 1000;
 
             _PrinterPort.Open();
-            _continue = true;
-            readThread.Start();
 
-            _PrinterPort.WriteLine("G29 P5");
             
+            while (_continue)
+            {            
+                if (!(_waitforprinter))
+                {
+                    readThread.Start();
+                    _PrinterPort.WriteLine("G28");
+                    _PrinterPort.WriteLine("G29 P5 V4");
+                    _PrinterPort.WriteLine("G28");
+                    _waitforprinter = true;
+                }
+                if (_responseReady)
+                {
+                    readThread.Abort();
+                    ParseResponse(fullResponse);
+                }
+            }
+
+            Console.WriteLine("Press any key to stop reading");
+            Console.ReadKey();
+            _continue = false;
+
+            Console.WriteLine("Press any key to quit.");
+            Console.ReadKey();
+            
+            _PrinterPort.Close();
         }
 
         public static void Read()
@@ -37,8 +64,16 @@ namespace MPMD_Calibration
             {
                 try
                 {
+                    
                     string message = _PrinterPort.ReadLine();
                     Console.WriteLine(message);
+                    if (message.Contains("Bed X:")){
+                        fullResponse.Add(message);
+                    }
+                    else if (message.Contains("ok N0 P15 B15"))
+                    {
+                        _responseReady = true;
+                    }
                 }
                 catch (TimeoutException) { }
             }
@@ -63,6 +98,16 @@ namespace MPMD_Calibration
                 portName = defaultPortName;
             }
             return portName;
+        }
+
+        public static void ParseResponse(List<string> response)
+        {
+            Console.WriteLine("begin ParseResponse");
+            foreach(string line in response)
+            {
+                Console.WriteLine(line);
+            }
+            
         }
     }
 }
