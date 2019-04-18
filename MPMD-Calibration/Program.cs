@@ -41,10 +41,10 @@ namespace MPMD_Calibration
                     _PrinterPort.WriteLine("G28");
                     _waitforprinter = true;
                 }
-                if (_responseReady)
+                else if (_responseReady)
                 {
-                    readThread.Abort();
                     ParseResponse(fullResponse);
+                    _continue = false;
                 }
             }
 
@@ -60,7 +60,7 @@ namespace MPMD_Calibration
 
         public static void Read()
         {
-            while (_continue)
+            while (!(_responseReady))
             {
                 try
                 {
@@ -103,11 +103,39 @@ namespace MPMD_Calibration
         public static void ParseResponse(List<string> response)
         {
             Console.WriteLine("begin ParseResponse");
+            bool first = true;
+            int coordinateCount = 0;
+            List<CoordinateTest> CoordinateCollection;
             foreach(string line in response)
             {
-                Console.WriteLine(line);
+                String[] splitstrings = { "Bed X:", "Y:", "Z:" };
+                string[] coordsstring = line.Split(splitstrings, System.StringSplitOptions.RemoveEmptyEntries);
+                
+                if (first) {CoordinateCollection.Add(new  }
+                else { };
+
+                int x = Convert.ToInt32(coordsstring[0]);
+                int y = Convert.ToInt32(coordsstring[1]);
+                decimal z = Convert.ToDecimal(coordsstring[2]);
+
+                first = !(first);
             }
             
         }
+        
     }
+    public class CoordinateTest
+    {
+        int x;
+        int y;
+        decimal z1;
+        decimal z2;
+
+        public CoordinateTest(int x, int y)
+        {
+            this.x = x;
+            this.y = y;
+        }
+    }
+
 }
