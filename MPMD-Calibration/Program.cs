@@ -104,21 +104,28 @@ namespace MPMD_Calibration
         {
             Console.WriteLine("begin ParseResponse");
             bool first = true;
-            int coordinateCount = 0;
-            List<CoordinateTest> CoordinateCollection;
+            var coords = new CoordinateSet();
             foreach(string line in response)
             {
-                String[] splitstrings = { "Bed X:", "Y:", "Z:" };
+                decimal x;
+                decimal y;
+                decimal z;
+
+                string[] splitstrings = { "Bed X:", "Y:", "Z:" };
                 string[] coordsstring = line.Split(splitstrings, System.StringSplitOptions.RemoveEmptyEntries);
+                Console.WriteLine(coordsstring[0]);
+                Console.WriteLine(coordsstring[1]);
+                Console.WriteLine(coordsstring[2]);
                 
-                if (first) {CoordinateCollection.Add(new CoordinateTest coordtest }
-                else { };
+                x = Convert.ToDecimal(coordsstring[0]);
+                y = Convert.ToDecimal(coordsstring[1]);
+                z = Convert.ToDecimal(coordsstring[3]);
 
-                int x = Convert.ToInt32(coordsstring[0]);
-                int y = Convert.ToInt32(coordsstring[1]);
-                decimal z = Convert.ToDecimal(coordsstring[2]);
-
-                first = !(first);
+                //Console.WriteLine("X: " + x + " Y: " + y + " Z: " + z);
+                //var currentTap = new CoordinateTest(line, first);
+                //coords.coordinates.Add(currentTap);
+                //Console.WriteLine(currentTap.ToString());
+                first = !first;
             }
             
         }
@@ -128,31 +135,29 @@ namespace MPMD_Calibration
     {
         public int x { get; set; }
         public int y { get; set; }
-        public decimal z1 { get; set; }
-        public decimal z2 { get; set; }
-        public decimal zAvg
+        public decimal z { get; set; }
+        public bool first { get; set; }
+
+        public CoordinateTest(string line, bool first)
         {
-            get
-            {
-                return (z1 + z2) / 2;
-            }
-            
-        }
-        public decimal zDiff
-        {
-            get
-            {
-                return (z1 - z2);
-            }
+            string[] splitstrings = { "Bed X:", "Y:", "Z:" };
+            string[] coordsstring = line.Split(splitstrings, System.StringSplitOptions.RemoveEmptyEntries);
+            x = Convert.ToInt32(coordsstring[0]);
+            y = Convert.ToInt32(coordsstring[1]);
+            z = Convert.ToDecimal(coordsstring[3]);
+            first = this.first;
         }
 
+        public override string ToString()
+        {
 
-
+            return "X: " + x + " Y: " + y + " Z: " + z;
+        }
     }
 
     public class CoordinateSet
     {
-        CoordinateTest[] coordinates;
+        public List<CoordinateTest> coordinates;
         decimal zSetAvg;
     }
 
