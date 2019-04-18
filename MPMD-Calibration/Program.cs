@@ -111,7 +111,7 @@ namespace MPMD_Calibration
                 String[] splitstrings = { "Bed X:", "Y:", "Z:" };
                 string[] coordsstring = line.Split(splitstrings, System.StringSplitOptions.RemoveEmptyEntries);
                 
-                if (first) {CoordinateCollection.Add(new  }
+                if (first) {CoordinateCollection.Add(new CoordinateTest coordtest }
                 else { };
 
                 int x = Convert.ToInt32(coordsstring[0]);
@@ -126,16 +126,34 @@ namespace MPMD_Calibration
     }
     public class CoordinateTest
     {
-        int x;
-        int y;
-        decimal z1;
-        decimal z2;
-
-        public CoordinateTest(int x, int y)
+        public int x { get; set; }
+        public int y { get; set; }
+        public decimal z1 { get; set; }
+        public decimal z2 { get; set; }
+        public decimal zAvg
         {
-            this.x = x;
-            this.y = y;
+            get
+            {
+                return (z1 + z2) / 2;
+            }
+            
         }
+        public decimal zDiff
+        {
+            get
+            {
+                return (z1 - z2);
+            }
+        }
+
+
+
+    }
+
+    public class CoordinateSet
+    {
+        CoordinateTest[] coordinates;
+        decimal zSetAvg;
     }
 
 }
