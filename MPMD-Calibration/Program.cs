@@ -107,24 +107,24 @@ namespace MPMD_Calibration
             var coords = new CoordinateSet();
             foreach(string line in response)
             {
-                decimal x;
-                decimal y;
-                decimal z;
+                //decimal x;
+                //decimal y;
+                //decimal z;
 
-                string[] splitstrings = { "Bed X:", "Y:", "Z:" };
-                string[] coordsstring = line.Split(splitstrings, System.StringSplitOptions.RemoveEmptyEntries);
-                Console.WriteLine(coordsstring[0]);
-                Console.WriteLine(coordsstring[1]);
-                Console.WriteLine(coordsstring[2]);
+                //string[] splitstrings = { "Bed X:", "Y:", "Z:" };
+                //string[] coordsstring = line.Split(splitstrings, System.StringSplitOptions.RemoveEmptyEntries);
+                //Console.WriteLine(coordsstring[0]);
+                //Console.WriteLine(coordsstring[1]);
+                //Console.WriteLine(coordsstring[2]);
                 
-                x = Convert.ToDecimal(coordsstring[0]);
-                y = Convert.ToDecimal(coordsstring[1]);
-                z = Convert.ToDecimal(coordsstring[3]);
+                //x = Convert.ToDecimal(coordsstring[0]);
+                //y = Convert.ToDecimal(coordsstring[1]);
+                //z = Convert.ToDecimal(coordsstring[3]);
 
                 //Console.WriteLine("X: " + x + " Y: " + y + " Z: " + z);
-                //var currentTap = new CoordinateTest(line, first);
-                //coords.coordinates.Add(currentTap);
-                //Console.WriteLine(currentTap.ToString());
+                var currentTap = new CoordinateTest(line, first);
+                coords.coordinates.Add(currentTap);
+                Console.WriteLine(currentTap.ToString());
                 first = !first;
             }
             
@@ -144,7 +144,7 @@ namespace MPMD_Calibration
             string[] coordsstring = line.Split(splitstrings, System.StringSplitOptions.RemoveEmptyEntries);
             x = Convert.ToInt32(coordsstring[0]);
             y = Convert.ToInt32(coordsstring[1]);
-            z = Convert.ToDecimal(coordsstring[3]);
+            z = Convert.ToDecimal(coordsstring[2]);
             first = this.first;
         }
 
